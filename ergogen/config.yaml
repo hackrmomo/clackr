@@ -1,53 +1,87 @@
 # `U` is a predefined unit of measure that means 19.05mm, which is MX spacing
+meta:
+  engine: 4.1.0
 units:
-  chocX: u
-  chocY: u
+  mxX: u
+  mxY: u
 points:
   zones:
     matrix:
       columns:
         pinky0:
+          key:
+            column_net: P1 
         pinky1:
+          key:
+            column_net: P0
         ring:
-          key.stagger: 0.66U
+          key:
+            column_net: P2
+            stagger: 0.66U
+            bind: [0,0,23.82,0]
           rows.modifiers.skip: true
-          key.bind: [0,0,23.82,0]
         middle:
-          key.stagger: 0.25U
+          key:
+            column_net: P3
+            stagger: 0.25U
+            bind: [0,0,20,0]
           rows.modifiers.skip: true
         index0:
-          key.stagger: -0.25U
+          key:
+            column_net: P4
+            stagger: -0.25U
+            bind: [0,0,22,0]
           rows.modifiers.skip: true
-          key.bind: [0,0,22,0]
         index1:
-          key.stagger: -0.15U
+          key:
+            column_net: P5
+            stagger: -0.15U
+            bind: [0,0,22,0]
           rows.modifiers.skip: true
-          key.bind: [0,0,22,0]
       rows:
-        modifiers.padding: U
-        bottom.padding: U
-        home.padding: U
-        top.padding: U
-        numerics.padding: U
+        modifiers:
+          row_net: P14
+          padding: U
+        bottom:
+          row_net: P15
+          padding: U
+        home:
+          row_net: P18
+          padding: U
+        top:
+          row_net: P19
+          padding: U
+        numerics:
+          row_net: P20
+          padding: U
     thumb:
       anchor:
         ref: matrix_ring_bottom
         shift: [1U, -1.25U]
       columns:
         tucky:
+          key:
+            row_net: P16
+            column_net: P1
         reachy:
           key:
+            row_net: P16
+            column_net: P0
             spread: U
             splay: -10
             origin: [-0.5U, -0.5U]
         extra-reachy:
           key:
+            row_net: P16
+            column_net: P2
             spread: U
             splay: -10
             origin: [-0.5U, -0.5U]
             bind: [0,0.71,0,0]
         extra-extra-reachy:
           key:
+            row_net: P16
+            column_net: P3
             spread: U
             splay: -10
             origin: [-0.5U, -0.5U]
@@ -72,7 +106,7 @@ outlines:
     - what: rectangle
       fillet: 2
       where: true
-      size: [chocX, chocY]
+      size: [mxX, mxY]
   right:
     - what: outline
       name: _right_no_mcu
@@ -137,28 +171,82 @@ outlines:
       size: [cx, cy]
       operation: stack
 pcbs:
-  clackr:
+  clackr-left:
+    template: kicad8
     outlines:
-      main.outline: full
-      keycaps:
-        outline: _keycap_outlines
-        layer: Eco1.User
+      main.outline: left
     footprints:
-      mx:
-        what: mx
-        where: true
-        params:
-          keycaps: true
-          reverse: true
-          hotswap: true
-          from: "{{col_net}}"
-          to: "{{names}}"
-      diode:
-        what: sod-123w
-        where: true
-        params:
-          from: "{{row_net}}"
-          to: "{{names}}"
+      mxvia:
+        what: via
+        where: [/^matrix_*/gm, /^thumb_*/gm]
         adjust:
           shift: [-7.6, -1.6]
+        params:
+          net: "{{column_net}}"
+      mx:
+        what: ceoloide/switch_mx
+        where: [/^matrix_*/gm, /^thumb_*/gm]
+        params:
+          include_keycap: true
+          hotswap: true
+          solder: true
+          from: "{{column_net}}"
+          to: "{{colrow}}"
+      diode:
+        what: ceoloide/diode_tht_sod123
+        where: [/^matrix_*/gm, /^thumb_*/gm]
+        params:
+          from: "{{colrow}}"
+          to: "{{row_net}}"
+        adjust:
+          shift: [7.6, -1.6]
           rotate: 90
+      mcu:
+        what: ceoloide/mcu_nice_nano
+        where:
+          ref: matrix_index1_numerics
+          shift: [22.5, -6.55]
+        params:
+          show_silk_labels_on_both_sides: false
+      rotaryenc:
+        what: ceoloide/rotary_encoder_ec11_ec12
+        where:
+          ref: matrix_index1_home
+          shift: [22.5, 0]
+  clackr-right:
+    template: kicad8
+    outlines:
+      main.outline: right
+    footprints:
+      mxvia:
+        what: via
+        where: /^mirror_*/gm
+        adjust:
+          shift: [-7.6, -1.6]
+        params:
+          net: "{{column_net}}"
+      mx:
+        what: ceoloide/switch_mx
+        where: /^mirror_*/gm
+        params:
+          include_keycap: true
+          solder: true
+          hotswap: true
+          from: "{{column_net}}"
+          to: "{{colrow}}"
+      diode:
+        what: ceoloide/diode_tht_sod123
+        where: /^mirror_*/gm
+        params:
+          from: "{{row_net}}"
+          to: "{{colrow}}"
+        adjust:
+          shift: [7.6, -1.6]
+          rotate: 90
+      mcu:
+        what: ceoloide/mcu_nice_nano
+        where:
+          ref: mirror_matrix_index1_numerics
+          shift: [22.5, -6.55]
+        params:
+          show_silk_labels_on_both_sides: false
