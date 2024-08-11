@@ -1,0 +1,164 @@
+# `U` is a predefined unit of measure that means 19.05mm, which is MX spacing
+units:
+  chocX: u
+  chocY: u
+points:
+  zones:
+    matrix:
+      columns:
+        pinky0:
+        pinky1:
+        ring:
+          key.stagger: 0.66U
+          rows.modifiers.skip: true
+          key.bind: [0,0,23.82,0]
+        middle:
+          key.stagger: 0.25U
+          rows.modifiers.skip: true
+        index0:
+          key.stagger: -0.25U
+          rows.modifiers.skip: true
+          key.bind: [0,0,22,0]
+        index1:
+          key.stagger: -0.15U
+          rows.modifiers.skip: true
+          key.bind: [0,0,22,0]
+      rows:
+        modifiers.padding: U
+        bottom.padding: U
+        home.padding: U
+        top.padding: U
+        numerics.padding: U
+    thumb:
+      anchor:
+        ref: matrix_ring_bottom
+        shift: [1U, -1.25U]
+      columns:
+        tucky:
+        reachy:
+          key:
+            spread: U
+            splay: -10
+            origin: [-0.5U, -0.5U]
+        extra-reachy:
+          key:
+            spread: U
+            splay: -10
+            origin: [-0.5U, -0.5U]
+            bind: [0,0.71,0,0]
+        extra-extra-reachy:
+          key:
+            spread: U
+            splay: -10
+            origin: [-0.5U, -0.5U]
+            bind: [0,0,0,0.71]
+  mirror:
+    ref: "thumb_extra-extra-reachy"
+    distance: 4U
+outlines:
+  _left_no_mcu:
+    - where: [/^matrix_*/gm, /^thumb_*/gm]
+      what: rectangle
+      size: [cx + 3, cy + 3]
+      bound: true
+      fillet: .5
+  _right_no_mcu:
+    - where: /^mirror_*/gm
+      what: rectangle
+      size: [cx + 3, cy + 3]
+      bound: true
+      fillet: .5
+  _keycap_outlines:
+    - what: rectangle
+      fillet: 2
+      where: true
+      size: [chocX, chocY]
+  right:
+    - what: outline
+      name: _right_no_mcu
+    - what: polygon
+      fillet: .5
+      points:
+        - ref: mirror_matrix_index1_numerics
+          shift: [0.5U, 0.5U + 0.475]
+        - ref: mirror_matrix_index1_numerics
+          shift: [1.74U + 2, 0.5U + 0.475]
+        - ref: mirror_matrix_index1_numerics
+          shift: [1.74U + 2, -4.87U + 2]
+        - ref: mirror_matrix_index1_numerics
+          shift: [0.5U, -4.87U + 2]
+      operation: add
+  left:
+    - what: outline
+      name: _left_no_mcu
+    - what: polygon
+      fillet: .5
+      points:
+        - ref: matrix_index1_numerics
+          shift: [0.5U, 0.5U + 0.475]
+        - ref: matrix_index1_numerics
+          shift: [1.74U + 2, 0.5U + 0.475]
+        - ref: matrix_index1_numerics
+          shift: [1.74U + 2, -4.87U + 2]
+        - ref: matrix_index1_numerics
+          shift: [0.5U, -4.87U + 2]
+      operation: add
+  left-plate:
+    - what: outline
+      name: _left_no_mcu
+    - where: [/^matrix_*/gm, /^thumb_*/gm]
+      what: rectangle
+      size: [cx, cy]
+      operation: subtract
+  right-plate:
+    - what: outline
+      name: _right_no_mcu
+    - where: /^mirror_*/gm
+      what: rectangle
+      size: [cx, cy]
+      operation: subtract
+  full:
+    - what: outline
+      name: left
+    - what: outline
+      name: right
+  full-plates:
+    - what: outline
+      name: left-plate
+    - what: outline
+      name: right-plate
+  full-with-keys:
+    - what: outline
+      name: left
+    - what: outline
+      name: right
+    - where: true
+      what: rectangle
+      size: [cx, cy]
+      operation: stack
+pcbs:
+  clackr:
+    outlines:
+      main.outline: full
+      keycaps:
+        outline: _keycap_outlines
+        layer: Eco1.User
+    footprints:
+      mx:
+        what: mx
+        where: true
+        params:
+          keycaps: true
+          reverse: true
+          hotswap: true
+          from: "{{col_net}}"
+          to: "{{names}}"
+      diode:
+        what: sod-123w
+        where: true
+        params:
+          from: "{{row_net}}"
+          to: "{{names}}"
+        adjust:
+          shift: [-7.6, -1.6]
+          rotate: 90
