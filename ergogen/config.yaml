@@ -86,12 +86,22 @@ points:
             splay: -10
             origin: [-0.5U, -0.5U]
             bind: [0,0,0,0.71]
+    rotary_encoder:
+      anchor:
+        ref: matrix_index1_home
+        shift: [22, 0]
+      columns:
+        encoder:
+          key:
+            row_net: P14
+            column_net: P5
+            spread: U
   mirror:
     ref: "thumb_extra-extra-reachy"
     distance: 4U
 outlines:
   _left_no_mcu:
-    - where: [/^matrix_*/gm, /^thumb_*/gm]
+    - where: [/^matrix_*/gm, /^thumb_*/gm, /^rotary_encoder_*/gm]
       what: rectangle
       size: [cx + 3, cy + 3]
       bound: true
@@ -140,7 +150,7 @@ outlines:
   left-plate:
     - what: outline
       name: _left_no_mcu
-    - where: [/^matrix_*/gm, /^thumb_*/gm]
+    - where: [/^matrix_*/gm, /^thumb_*/gm, /^rotary_encoder_*/gm]
       what: rectangle
       size: [cx, cy]
       operation: subtract
@@ -178,14 +188,14 @@ pcbs:
     footprints:
       mxvia:
         what: via
-        where: [/^matrix_*/gm, /^thumb_*/gm]
+        where: [/^matrix_*/gm, /^thumb_*/gm, /^rotary_encoder_*/gm]
         adjust:
           shift: [-7.6, -1.6]
         params:
           net: "{{column_net}}"
       mx:
         what: ceoloide/switch_mx
-        where: [/^matrix_*/gm, /^thumb_*/gm]
+        where: [/^matrix_*/gm, /^thumb_*/gm, /^rotary_encoder_*/gm]
         params:
           include_keycap: true
           hotswap: true
@@ -194,7 +204,7 @@ pcbs:
           to: "{{colrow}}"
       diode:
         what: ceoloide/diode_tht_sod123
-        where: [/^matrix_*/gm, /^thumb_*/gm]
+        where: [/^matrix_*/gm, /^thumb_*/gm, /^rotary_encoder_*/gm]
         params:
           from: "{{colrow}}"
           to: "{{row_net}}"
@@ -205,14 +215,55 @@ pcbs:
         what: ceoloide/mcu_nice_nano
         where:
           ref: matrix_index1_numerics
-          shift: [22.5, -6.55]
+          shift: [22, -8]
         params:
           show_silk_labels_on_both_sides: false
+          P6: "MOSI"
+          P7: "SCK"
+          P10: "CS"
+          P8: "RE_A"
+          P9: "RE_C"
       rotaryenc:
         what: ceoloide/rotary_encoder_ec11_ec12
         where:
           ref: matrix_index1_home
-          shift: [22.5, 0]
+          shift: [22, 0]
+        params:
+          S1: "P5"
+          S2: "encoder_default"
+      batterysw:
+        what: ceoloide/power_switch_smd_side
+        where:
+          ref: matrix_index1_top
+          shift: [33.35, 10]
+        params:
+          side: B
+      batterypl:
+        what: ceoloide/battery_connector_jst_ph_2
+        where:
+          ref: matrix_index1_numerics
+          shift: [22, 0]
+        params:
+          side: B
+      resetsw:
+        what: ceoloide/reset_switch_smd_side
+        where:
+          ref: matrix_index1_top
+          shift: [33.35, 0]
+          rotate: 270
+        params:
+          side: B
+      display:
+        what: ceoloide/display_nice_view
+        where:
+          ref: matrix_index1_numerics
+          shift: [22, -10]
+        params:
+          MOSI: "CS"
+          SCK: "GND"
+          VCC: "VCC"
+          GND: "SCK"
+          CS: "MOSI"
   clackr-right:
     template: kicad8
     outlines:
@@ -230,23 +281,70 @@ pcbs:
         where: /^mirror_*/gm
         params:
           include_keycap: true
-          solder: true
           hotswap: true
-          from: "{{column_net}}"
-          to: "{{colrow}}"
+          solder: true
+          from: "{{colrow}}"
+          to: "{{column_net}}"
       diode:
         what: ceoloide/diode_tht_sod123
         where: /^mirror_*/gm
         params:
-          from: "{{row_net}}"
-          to: "{{colrow}}"
+          to: "{{row_net}}"
+          from: "{{colrow}}"
         adjust:
           shift: [7.6, -1.6]
-          rotate: 90
+          rotate: 270
       mcu:
         what: ceoloide/mcu_nice_nano
         where:
           ref: mirror_matrix_index1_numerics
-          shift: [22.5, -6.55]
+          shift: [22, -8]
         params:
           show_silk_labels_on_both_sides: false
+          P6: "MOSI"
+          P7: "SCK"
+          P10: "CS"
+          P8: "RE_A"
+          P9: "RE_C"
+      rotaryenc:
+        what: ceoloide/rotary_encoder_ec11_ec12
+        where:
+          ref: mirror_matrix_index1_home
+          shift: [22, 0]
+        params:
+          S1: "mirror_encoder_default"
+          S2: "P5"
+      batterysw:
+        what: ceoloide/power_switch_smd_side
+        where:
+          ref: mirror_matrix_index1_top
+          shift: [33.35, 10]
+          rotate: 180
+        params:
+          side: B
+      batterypl:
+        what: ceoloide/battery_connector_jst_ph_2
+        where:
+          ref: mirror_matrix_index1_numerics
+          shift: [22, 0]
+        params:
+          side: B
+      resetsw:
+        what: ceoloide/reset_switch_smd_side
+        where:
+          ref: mirror_matrix_index1_top
+          shift: [33.35, 0]
+          rotate: 270
+        params:
+          side: B
+      display:
+        what: ceoloide/display_nice_view
+        where:
+          ref: mirror_matrix_index1_numerics
+          shift: [22, -10]
+        params:
+          MOSI: "CS"
+          SCK: "GND"
+          VCC: "VCC"
+          GND: "SCK"
+          CS: "MOSI"
