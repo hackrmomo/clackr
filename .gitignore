@@ -1,2 +1,3 @@
 # temp:
-output/
+ergogen/output/pcbs/gerber*
+ergogen/output/pcbs/auto*
