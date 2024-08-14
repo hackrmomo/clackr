@@ -77,7 +77,7 @@ points:
             spread: U
             splay: -10
             origin: [-0.5U, -0.5U]
-            bind: [0,0.71,0,0]
+            bind: [0,0.73333,0,0]
         extra-extra-reachy:
           key:
             row_net: P16
@@ -85,7 +85,7 @@ points:
             spread: U
             splay: -10
             origin: [-0.5U, -0.5U]
-            bind: [0,0,0,0.71]
+            bind: [0,0,0,0.73333]
     rotary_encoder:
       anchor:
         ref: matrix_index1_home
@@ -96,6 +96,7 @@ points:
             row_net: P14
             column_net: P5
             spread: U
+            bind: [0,0,0,5]
   mirror:
     ref: "thumb_extra-extra-reachy"
     distance: 4U
@@ -147,6 +148,14 @@ outlines:
         - ref: matrix_index1_numerics
           shift: [0.5U, -4.87U + 2]
       operation: add
+  _left_scaled:
+    - what: outline
+      name: left
+      scale: 1.1
+  _right_scaled:
+    - what: outline
+      name: right
+      scale: 1.1
   left-plate:
     - what: outline
       name: _left_no_mcu
@@ -348,3 +357,26 @@ pcbs:
           VCC: "VCC"
           GND: "SCK"
           CS: "MOSI"
+cases:
+  caseleft:
+    - what: outline
+      name: _left_scaled
+      shift: [0, 0, 1.5]
+    - what: outline
+      name: left
+      operation: subtract
+      shift: [0, 0, 1.5]
+    - what: outline
+      name: left
+      operation: add
+  caseright:
+    - what: outline
+      name: _right_scaled
+      shift: [0, 0, 1.5]
+    - what: outline
+      name: right
+      operation: subtract
+      shift: [0, 0, 1.5]
+    - what: outline
+      name: right
+      operation: add
