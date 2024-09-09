@@ -1,3 +1,5 @@
 # temp:
 ergogen/output/pcbs/gerber*
 ergogen/output/pcbs/auto*
+
+.DS_Store
