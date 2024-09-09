@@ -107,12 +107,14 @@ outlines:
       size: [cx + 3, cy + 3]
       bound: true
       fillet: .5
+      operation: add
   _right_no_mcu:
     - where: /^mirror_*/gm
       what: rectangle
       size: [cx + 3, cy + 3]
       bound: true
       fillet: .5
+      operation: add
   _keycap_outlines:
     - what: rectangle
       fillet: 2
@@ -121,6 +123,7 @@ outlines:
   right:
     - what: outline
       name: _right_no_mcu
+      operation: stack
     - what: polygon
       fillet: .5
       points:
@@ -133,9 +136,24 @@ outlines:
         - ref: mirror_matrix_index1_numerics
           shift: [0.5U, -4.87U + 2]
       operation: add
+    - where: ["mirror_matrix_index1_numerics", "mirror_matrix_middle_numerics", "mirror_matrix_pinky1_numerics",
+        "mirror_matrix_index1_home", "mirror_matrix_middle_home", "mirror_matrix_pinky1_bottom",
+      ]
+      what: circle
+      radius: 1.1
+      operation: stack
+      adjust:
+        shift: [-0.5U, -0.5U]
+    - where: [/^mirror_rotary_encoder_*/gm]
+      what: circle
+      radius: 1.1
+      operation: stack
+      adjust:
+        shift: [0U, -1.5U]
   left:
     - what: outline
       name: _left_no_mcu
+      operation: stack
     - what: polygon
       fillet: .5
       points:
@@ -148,6 +166,20 @@ outlines:
         - ref: matrix_index1_numerics
           shift: [0.5U, -4.87U + 2]
       operation: add
+    - where: ["matrix_index1_numerics", "matrix_middle_numerics", "matrix_pinky1_numerics",
+        "matrix_index1_home", "matrix_middle_home", "matrix_pinky1_bottom",
+      ]
+      what: circle
+      radius: 1.1
+      operation: stack
+      adjust:
+        shift: [-0.5U, -0.5U]
+    - where: [/^rotary_encoder_*/gm]
+      what: circle
+      radius: 1.1
+      operation: stack
+      adjust:
+        shift: [0U, -1.5U]
   _left_scaled:
     - what: outline
       name: left
@@ -159,17 +191,35 @@ outlines:
   left-plate:
     - what: outline
       name: _left_no_mcu
+      operation: stack
     - where: [/^matrix_*/gm, /^thumb_*/gm, /^rotary_encoder_*/gm]
       what: rectangle
-      size: [cx, cy]
-      operation: subtract
+      size: [cx - 4, cy - 4]
+      operation: stack
+    - where: ["matrix_index1_numerics", "matrix_middle_numerics", "matrix_pinky1_numerics",
+        "matrix_index1_home", "matrix_middle_home", "matrix_pinky1_bottom",
+      ]
+      what: circle
+      radius: 1.1
+      operation: stack
+      adjust:
+        shift: [-0.5U, -0.5U]
   right-plate:
     - what: outline
       name: _right_no_mcu
+      operation: stack
     - where: /^mirror_*/gm
       what: rectangle
-      size: [cx, cy]
-      operation: subtract
+      size: [cx - 4, cy - 4]
+      operation: stack
+    - where: ["mirror_matrix_index1_numerics", "mirror_matrix_middle_numerics", "mirror_matrix_pinky1_numerics",
+        "mirror_matrix_index1_home", "mirror_matrix_middle_home", "mirror_matrix_pinky1_bottom",
+      ]
+      what: circle
+      radius: 1.1
+      operation: stack
+      adjust:
+        shift: [-0.5U, -0.5U]
   full:
     - what: outline
       name: left
@@ -187,7 +237,7 @@ outlines:
       name: right
     - where: true
       what: rectangle
-      size: [cx, cy]
+      size: [cx - 4, cy - 4]
       operation: stack
 pcbs:
   clackr-left:
@@ -195,6 +245,19 @@ pcbs:
     outlines:
       main.outline: left
     footprints:
+      mounting_holes:
+        what: ceoloide/mounting_hole_npth
+        where: [
+          "matrix_index1_numerics", "matrix_middle_numerics", "matrix_pinky1_numerics",
+          "matrix_index1_home", "matrix_middle_home", "matrix_pinky1_bottom",
+        ]
+        adjust:
+          shift: [-0.5U, -0.5U]
+      mounting_holes_edge:
+        what: ceoloide/mounting_hole_npth
+        where: [/^rotary_encoder_*/gm]
+        adjust:
+          shift: [0U, -1.5U]
       mxvia:
         what: via
         where: [/^matrix_*/gm, /^thumb_*/gm, /^rotary_encoder_*/gm]
@@ -278,6 +341,19 @@ pcbs:
     outlines:
       main.outline: right
     footprints:
+      mounting_holes:
+        what: ceoloide/mounting_hole_npth
+        where: [
+          "mirror_matrix_index1_numerics", "mirror_matrix_middle_numerics", "mirror_matrix_pinky1_numerics",
+          "mirror_matrix_index1_home", "mirror_matrix_middle_home", "mirror_matrix_pinky1_bottom",
+        ]
+        adjust:
+          shift: [-0.5U, -0.5U]
+      mounting_holes_edge:
+        what: ceoloide/mounting_hole_npth
+        where: [/^mirror_rotary_encoder_*/gm]
+        adjust:
+          shift: [0U, -1.5U]
       mxvia:
         what: via
         where: /^mirror_*/gm
@@ -357,26 +433,3 @@ pcbs:
           VCC: "VCC"
           GND: "SCK"
           CS: "MOSI"
-cases:
-  caseleft:
-    - what: outline
-      name: _left_scaled
-      shift: [0, 0, 1.5]
-    - what: outline
-      name: left
-      operation: subtract
-      shift: [0, 0, 1.5]
-    - what: outline
-      name: left
-      operation: add
-  caseright:
-    - what: outline
-      name: _right_scaled
-      shift: [0, 0, 1.5]
-    - what: outline
-      name: right
-      operation: subtract
-      shift: [0, 0, 1.5]
-    - what: outline
-      name: right
-      operation: add
